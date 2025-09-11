@@ -3,23 +3,35 @@
     "WorkflowName": "BOSOverrideRestrictionSpeed",
     "Rules": [
       {
-        "RuleName": "FreightKeyTrainSpeedLimit",
-        "SuccessEvent": "Freight train speed is not within limit",
-        "ErrorMessage": "",
-        "Expression": "TrainInput.TrainType == \"Freight\" && TrainInput.Speed >40 && TrainInput.Track == \"T1\" && TrainInput.KeyTrain == \"Y\"",
+        "RuleName": "Override speed for Key Train to 10 mph",
+        "SuccessEvent": "Override speed for Key Train to 10 mph rule Executed",
+        "ErrorMessage": "Didn't meet the Override speed for Key Train to 10 mph Rule",
+        "Expression": "Train.Type == \"Freight\" && Train.KeyTrain== \"Y\" && Train.Symbol == \"ALTALT\" && Restriction.Type == \"A\" && Restriction.Subdivision == \"Afton\" && Restriction.Speed == 29 && Restriction.Track == \"Main1\" && Restriction.ReasonCode == \"DR\" ",
         "Properties": {
-          "Speed": 15,
-          "Comments": "reduce speed"
+          "Speed": 10,
+          "Comments": "Override the Restriction Speed to 10"
         }
       },
+
       {
-        "RuleName": "FreightNonKeyTrainSpeedLimit",
-        "SuccessEvent": "Freight train speed is above limit",
-        "ErrorMessage": "",
-        "Expression": "TrainInput.TrainType == \"Freight\" && TrainInput.Speed >40 && TrainInput.Track == \"T1\" && TrainInput.KeyTrain == \"N\"",
+        "RuleName": "Not a keytrain and restriction speed 29 mph",
+        "SuccessEvent": "Not a keytrain and restriction speed 29 mph rule Executed",
+        "ErrorMessage": "Didn't meet the Not a keytrain and restriction speed 29 mph Rule",
+        "Expression": "Train.Type == \"Freight\" && Train.KeyTrain==\"N\" && Train.Symbol == \"ALTALT\" && Restriction.Type == \"A\" && Restriction.Subdivision == \"Afton\" && Restriction.Speed == 29 && Restriction.Track == \"Main1\" && Restriction.ReasonCode == \"DR\" ",
         "Properties": {
-          "Speed": 30,
-          "Comments": "reduce speed"
+          "Speed": 29,
+          "Comments": "Restriction Speed is 29 "
+        }
+      },
+
+      {
+        "RuleName": "Not a keytrain and restriction speed 10 mph",
+        "SuccessEvent": "Not a keytrain and restriction speed 10 mph rule Executed",
+        "ErrorMessage": "Didn't meet the Not a keytrain and restriction speed 10 mph Rule",
+        "Expression": "Train.Type == \"Freight\" && Train.KeyTrain==\"N\" && Train.Symbol == \"ALTALT\" && Restriction.Type == \"A\" && Restriction.Subdivision == \"Afton\" && Restriction.Speed == 10 && Restriction.Track == \"Main1\" && Restriction.ReasonCode == \"DR\" ",
+        "Properties": {
+          "Speed": 29,
+          "Comments": "Restriction Speed is 29 "
         }
       }
     ]

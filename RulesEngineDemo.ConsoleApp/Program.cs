@@ -20,41 +20,10 @@ namespace PTC.RulesEngine.ConsoleApp
                 var rulesFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Rules", "sample-rules.json");
                 var rulesRepository = new RulesRepository(rulesFilePath);
                 var rulesEngineService = new RulesEngineService(rulesRepository);
-                var Train = new TrainInput
-                {
-                    Subdivision = "North",
-                    Track = "T1",
-                    Speed = 55,
-                    ReasonCode = "Weather",
-                    TypeRestriction = "B",
-                    KeyTrain = "N",
-                    Route = "ABCDEF",
-                    Source = "SRC",
-                    Destination = "DST",
-                    CarType = "C01",
-                    TrainType = "Freight"
-                };
-                Console.WriteLine($"======================Key Train================================================");
-                await RunTrainRulesEvaluation(rulesEngineService, Train);
-                Console.WriteLine($"======================================================================");
-                Train = new TrainInput
-                {
-                    Subdivision = "North",
-                    Track = "T1",
-                    Speed = 55,
-                    ReasonCode = "Weather",
-                    TypeRestriction = "B",
-                    KeyTrain = "Y",
-                    Route = "ABCDEF",
-                    Source = "SRC",
-                    Destination = "DST",
-                    CarType = "C01",
-                    TrainType = "Freight"
-                };
-                Console.WriteLine($"=======================NonKey Train===============================================");
-                await RunTrainRulesEvaluation(rulesEngineService, Train);
-                Console.WriteLine($"======================================================================");
+                var train = new Train { KeyTrain = "Y", Type = "Freight", Symbol = "ALTALT" };
+                var restriction = new Restriction { ReasonCode = "DR", Speed = 29, Track = "Main1", Subdivision = "Afton", Type = "A" };
 
+                await ExecuteRulesAsync(rulesEngineService, train, restriction);
             }
             catch (Exception ex)
             {
@@ -65,13 +34,12 @@ namespace PTC.RulesEngine.ConsoleApp
             Console.ReadKey();
         }
 
-        private static async Task RunTrainRulesEvaluation(RulesEngineService rulesEngineService, TrainInput Train)
+        public static async Task ExecuteRulesAsync(RulesEngineService rulesEngineService, params object[] inputs)
         {
-            var resultList = await rulesEngineService.ExecuteRulesAsync<TrainInput>("BOSOverrideRestrictionSpeed", Train, "TrainInput");
+            var resultList = await rulesEngineService.ExecuteRulesAsync("BOSOverrideRestrictionSpeed", inputs);
 
             foreach (var res in resultList)
             {
-               
                 Console.WriteLine($"Rule: {res.RuleName}");
                 Console.WriteLine($"Success: {res.IsSuccess}");
                 Console.WriteLine($"Message: {res.Message}");
@@ -85,10 +53,11 @@ namespace PTC.RulesEngine.ConsoleApp
                     }
                 }
                 else
+                {
                     Console.WriteLine("OutputData: None");
+                }
 
                 Console.WriteLine(new string('-', 40));
-               
             }
         }
     }

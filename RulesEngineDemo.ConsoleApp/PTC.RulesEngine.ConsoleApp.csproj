@@ -29,7 +29,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="TrainInput.cs" />
+    <Compile Include="Restriction.cs" />
+    <Compile Include="Train.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

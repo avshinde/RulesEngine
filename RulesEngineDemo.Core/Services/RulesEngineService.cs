@@ -35,7 +35,45 @@ namespace PTC.RulesEngine.Core.Services
             }).ToList();
         }
 
-       
+        //overide ExecuteRulesAsync to accept  workflowname and array input data then convert it to ruleparameter array
+        public async Task<List<RuleResult>> ExecuteRulesAsync<T>(string workflowName, T[] inputDataArray)
+        {
+            var engine = await GetOrCreateEngineAsync(workflowName);
+            var ruleParams = inputDataArray.Select(data => new RuleParameter(typeof(T).Name, data)).ToArray();
+            var results = await engine.ExecuteAllRulesAsync(workflowName, ruleParams);
+            return results.Select(r => new RuleResult
+            {
+                RuleName = r.Rule.RuleName,
+                IsSuccess = r.IsSuccess,
+                Message = r.IsSuccess ? r.Rule.SuccessEvent : r.Rule.ErrorMessage ?? string.Empty,
+                InputData = inputDataArray,
+                OutputData = r.IsSuccess ? r.Rule.Properties ?? new Dictionary<string, object>() : new Dictionary<string, object>()
+            }).ToList();
+        }
+
+        public async Task<List<RuleResult>> ExecuteRulesAsync(string workflowName, params object[] inputs)
+        {
+            var engine = await GetOrCreateEngineAsync(workflowName);
+
+            // Convert each object into a RuleParameter
+            var ruleParams = inputs.Select(input =>
+                new RuleParameter(input.GetType().Name, input)
+            ).ToArray();
+
+            var results = await engine.ExecuteAllRulesAsync(workflowName, ruleParams);
+
+            return results.Select(r => new RuleResult
+            {
+                RuleName = r.Rule.RuleName,
+                IsSuccess = r.IsSuccess,
+                Message = r.IsSuccess ? r.Rule.SuccessEvent : r.Rule.ErrorMessage ?? string.Empty,
+                InputData = inputs,   
+                OutputData = r.IsSuccess ? r.Rule.Properties ?? new Dictionary<string, object>() : new Dictionary<string, object>()
+            }).ToList();
+        }
+
+
+
         private async Task<RulesEngines.RulesEngine> GetOrCreateEngineAsync(string workflowName)
         {
             var workflow = await _rulesRepository.GetWorkflowByNameAsync(workflowName);
