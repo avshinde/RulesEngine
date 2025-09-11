@@ -1,0 +1,35 @@
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <RootNamespace>RulesEngineDemo.ConsoleApp</RootNamespace>
+    <AssemblyName>RulesEngineDemo.ConsoleApp</AssemblyName>
+    <ProjectGuid>{7D112E2F-5D2F-4F1D-9E2E-4DA3B98D734A}</ProjectGuid>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <OutputPath>bin\</OutputPath>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RulesEngineDemo.Core\PTC.RulesEngine.Core.csproj">
+      <Project>{4E514D44-420A-4A0B-88C7-98E1AB7E4A1B}</Project>
+      <Name>PTC.RulesEngine.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Rules\sample-rules.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Rules\sample-rules.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="TrainInput.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

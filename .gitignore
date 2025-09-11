@@ -1,0 +1,19 @@
+# Visual Studio user-specific files
+.vs/
+*.user
+*.suo
+
+# Build results
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Tt]emp/
+
+# Packages
+packages/
+*.nupkg
+
+# Other
+*.cache
+*.dbmdl
+*.pdb

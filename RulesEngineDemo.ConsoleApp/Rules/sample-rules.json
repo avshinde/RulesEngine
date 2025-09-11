@@ -1,0 +1,27 @@
+[
+  {
+    "WorkflowName": "BOSOverrideRestrictionSpeed",
+    "Rules": [
+      {
+        "RuleName": "FreightKeyTrainSpeedLimit",
+        "SuccessEvent": "Freight train speed is not within limit",
+        "ErrorMessage": "",
+        "Expression": "TrainInput.TrainType == \"Freight\" && TrainInput.Speed >40 && TrainInput.Track == \"T1\" && TrainInput.KeyTrain == \"Y\"",
+        "Properties": {
+          "Speed": 15,
+          "Comments": "reduce speed"
+        }
+      },
+      {
+        "RuleName": "FreightNonKeyTrainSpeedLimit",
+        "SuccessEvent": "Freight train speed is above limit",
+        "ErrorMessage": "",
+        "Expression": "TrainInput.TrainType == \"Freight\" && TrainInput.Speed >40 && TrainInput.Track == \"T1\" && TrainInput.KeyTrain == \"N\"",
+        "Properties": {
+          "Speed": 30,
+          "Comments": "reduce speed"
+        }
+      }
+    ]
+  }
+]
