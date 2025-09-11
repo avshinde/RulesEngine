@@ -1,7 +1,6 @@
 ﻿using PTC.RulesEngine.Core.Models;
 using PTC.RulesEngine.Core.Repository;
 using PTC.RulesEngine.Core.Services;
-using RulesEngineDemo.ConsoleApp;
 using System;
 using System.Collections.Generic;
 using System.IO;

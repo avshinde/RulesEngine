@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RulesEngineDemo.ConsoleApp
+namespace PTC.RulesEngine.ConsoleApp
 {
     public class Restriction
     {
