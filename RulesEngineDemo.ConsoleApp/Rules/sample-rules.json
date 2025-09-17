@@ -8,7 +8,7 @@
         "ErrorMessage": "Didn't meet the Override speed for Key Train to 10 mph Rule",
         "Expression": "Train.Type == \"Freight\" && Train.KeyTrain== \"Y\" && Train.Symbol == \"ALTALT\" && Restriction.Type == \"A\" && Restriction.Subdivision == \"Afton\" && Restriction.Speed == 29 && Restriction.Track == \"Main1\" && Restriction.ReasonCode == \"DR\" ",
         "Properties": {
-          "Speed": 10,
+          "Speed": 12,
           "Comments": "Override the Restriction Speed to 10"
         }
       },
