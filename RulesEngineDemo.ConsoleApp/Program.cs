@@ -37,7 +37,7 @@ namespace PTC.RulesEngine.ConsoleApp
                     _rulesRepository.ClearCache(); // Clear cache so new rules are loaded
                     _rulesChanged = false;
                 }
-                Console.WriteLine($"======== Rules service called count({i++}) =======\n\n");
+                Console.WriteLine($"======== Rules service called count({i}) =======\n\n");
                 await ExecuteRulesAsync(rulesEngineService, train, restriction);
 
                 // add thread sleep for 15 seconds

@@ -8,6 +8,7 @@
         "ErrorMessage": "Didn't meet the Override speed for Key Train to 10 mph Rule",
         "Expression": "Train.Type == \"Freight\" && Train.KeyTrain== \"Y\" && Train.Symbol == \"ALTALT\" && Restriction.Type == \"A\" && Restriction.Subdivision == \"Afton\" && Restriction.Speed == 29 && Restriction.Track == \"Main1\" && Restriction.ReasonCode == \"DR\" ",
         "Properties": {
+          "Priority": 2,
           "Speed": 12,
           "Comments": "Override the Restriction Speed to 10"
         }
@@ -19,6 +20,7 @@
         "ErrorMessage": "Didn't meet the Not a keytrain and restriction speed 29 mph Rule",
         "Expression": "Train.Type == \"Freight\" && Train.KeyTrain==\"N\" && Train.Symbol == \"ALTALT\" && Restriction.Type == \"A\" && Restriction.Subdivision == \"Afton\" && Restriction.Speed == 29 && Restriction.Track == \"Main1\" && Restriction.ReasonCode == \"DR\" ",
         "Properties": {
+          "Priority": 3,
           "Speed": 29,
           "Comments": "Restriction Speed is 29 "
         }
@@ -31,6 +33,7 @@
         "Expression": "Train.Type == \"Freight\" && Train.KeyTrain==\"N\" && Train.Symbol == \"ALTALT\" && Restriction.Type == \"A\" && Restriction.Subdivision == \"Afton\" && Restriction.Speed == 10 && Restriction.Track == \"Main1\" && Restriction.ReasonCode == \"DR\" ",
         "Properties": {
           "Speed": 29,
+          "Priority": 1,
           "Comments": "Restriction Speed is 29 "
         }
       }

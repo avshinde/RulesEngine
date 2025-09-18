@@ -40,6 +40,15 @@ namespace PTC.RulesEngine.Core.Repository
                 _cachedWorkflows = JsonConvert.DeserializeObject<List<Workflow>>(jsonContent) ?? new List<Workflow>();
                 _lastFileWriteTime = fileWriteTime;
             }
+            foreach (var workflow in _cachedWorkflows)
+            {
+                if (workflow.Rules != null && workflow.Rules.Count() > 0)
+                {
+                    workflow.Rules = workflow.Rules
+                        .OrderBy(r => r.Properties != null && r.Properties.ContainsKey("Priority") ? Convert.ToInt32(r.Properties["Priority"]) : int.MaxValue)
+                        .ToList();
+                }
+            }
             return _cachedWorkflows;
         }
 
