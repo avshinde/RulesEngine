@@ -12,7 +12,6 @@ namespace PTC.RulesEngine.Core.Repository
     {
         private readonly string _rulesFilePath;
         private List<Workflow> _cachedWorkflows = null;
-        private DateTime _lastFileWriteTime = DateTime.MinValue;
 
         public RulesRepository(string rulesFilePath)
         {
@@ -28,18 +27,17 @@ namespace PTC.RulesEngine.Core.Repository
 
         public async Task<List<Workflow>> GetWorkflowsAsync()
         {
+            if (_cachedWorkflows != null)
+            {
+                // Always use cached workflows unless explicitly cleared
+                return _cachedWorkflows;
+            }
             if (!File.Exists(_rulesFilePath))
             {
                 throw new FileNotFoundException($"Rules file not found: {_rulesFilePath}");
             }
-
-            var fileWriteTime = File.GetLastWriteTimeUtc(_rulesFilePath);
-            if (_cachedWorkflows == null || fileWriteTime != _lastFileWriteTime)
-            {
-                var jsonContent = File.ReadAllText(_rulesFilePath);
-                _cachedWorkflows = JsonConvert.DeserializeObject<List<Workflow>>(jsonContent) ?? new List<Workflow>();
-                _lastFileWriteTime = fileWriteTime;
-            }
+            var jsonContent = File.ReadAllText(_rulesFilePath);
+            _cachedWorkflows = JsonConvert.DeserializeObject<List<Workflow>>(jsonContent) ?? new List<Workflow>();
             foreach (var workflow in _cachedWorkflows)
             {
                 if (workflow.Rules != null && workflow.Rules.Count() > 0)
@@ -59,10 +57,9 @@ namespace PTC.RulesEngine.Core.Repository
         }
 
         // Method to clear cache (call this when file watcher triggers)
-        public void ClearCache()
+        public void ReloadRules()
         {
             _cachedWorkflows = null;
-            _lastFileWriteTime = DateTime.MinValue;
         }
     }
 }
