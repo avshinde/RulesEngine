@@ -38,5 +38,20 @@
         }
       }
     ]
+  },
+  {
+    "WorkflowName": "DynamicSpeedRestriction",
+    "Rules": [
+      {
+        "RuleName": "Dynamic speed restriction for Afton",
+        "SuccessEvent": "Dynamic speed restriction matched for Afton",
+        "ErrorMessage": "No dynamic speed restriction for Afton",
+        "Expression": "Restriction.Speed < 30 && Restriction.Subdivision == \"Afton\"",
+        "Properties": {
+          "Priority": 1,
+          "Comments": "Dynamic speed restriction applied"
+        }
+      }
+    ]
   }
 ]

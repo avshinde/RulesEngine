@@ -3,6 +3,7 @@ using PTC.RulesEngine.Core.Repository;
 using PTC.RulesEngine.Core.Services;
 using System;
 using System.Configuration;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PTC.RulesEngine.ConsoleApp
@@ -14,7 +15,6 @@ namespace PTC.RulesEngine.ConsoleApp
         static async Task Main(string[] args)
         {
             Console.WriteLine("=== Rules Engine Demo ===\n");
-            Console.WriteLine("Set ReloadRules=true in app.config to reload rules. Set to false to use cache.");
 
             var rulesFilePath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Rules", "sample-rules.json");
             _rulesRepository = new RulesRepository(rulesFilePath);
@@ -38,7 +38,7 @@ namespace PTC.RulesEngine.ConsoleApp
                 {
                     _rulesRepository.ReloadRules();
                     Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.WriteLine("Rules cache cleared. Latest rules are loaded for next execution.");
+                    Console.WriteLine("Rules cache cleared. Latest rules are loaded for  execution.");
                     Console.ResetColor();
                     // Set flag to false so reload only happens once
                     var exePath = System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -49,20 +49,22 @@ namespace PTC.RulesEngine.ConsoleApp
                 }
                 Console.WriteLine($"======== Rules service called count({i++}) =======\n");
                 await ExecuteRulesAsync(rulesEngineService, train, restriction);
-                await Task.Delay(7000); // Execute every 7 seconds
+                await Task.Delay(15000); 
             }
         }
 
         public static async Task ExecuteRulesAsync(RulesEngineService rulesEngineService, params object[] inputs)
         {
-            var resultList = await rulesEngineService.ExecuteRulesAsync("BOSOverrideRestrictionSpeed", inputs);
+            // Step 1: Evaluate DynamicSpeedRestriction workflow
+            var dynamicResults = await rulesEngineService.ExecuteRulesAsync("DynamicSpeedRestriction", inputs);
+            bool dynamicMatched = dynamicResults.Any(r => r.IsSuccess);
 
-            foreach (var res in resultList)
+            Console.WriteLine("--- DynamicSpeedRestriction Workflow Results ---");
+            foreach (var res in dynamicResults)
             {
                 Console.WriteLine($"Rule: {res.RuleName}");
                 Console.WriteLine($"Success: {res.IsSuccess}");
                 Console.WriteLine($"Message: {res.Message}");
-
                 if (res.OutputData != null && res.OutputData.Count > 0)
                 {
                     Console.WriteLine("OutputData:");
@@ -75,8 +77,42 @@ namespace PTC.RulesEngine.ConsoleApp
                 {
                     Console.WriteLine("OutputData: None");
                 }
-
                 Console.WriteLine(new string('-', 40));
+            }
+
+            // Step 2: If matched, evaluate BOSOverrideRestrictionSpeed workflow
+            if (dynamicMatched)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("Dynamic speed restriction matched. Evaluating BOSOverrideRestrictionSpeed workflow...");
+                Console.ResetColor();
+                var bosResults = await rulesEngineService.ExecuteRulesAsync("BOSOverrideRestrictionSpeed", inputs);
+                Console.WriteLine("--- BOSOverrideRestrictionSpeed Workflow Results ---");
+                foreach (var res in bosResults)
+                {
+                    Console.WriteLine($"Rule: {res.RuleName}");
+                    Console.WriteLine($"Success: {res.IsSuccess}");
+                    Console.WriteLine($"Message: {res.Message}");
+                    if (res.OutputData != null && res.OutputData.Count > 0)
+                    {
+                        Console.WriteLine("OutputData:");
+                        foreach (var kvp in res.OutputData)
+                        {
+                            Console.WriteLine($"   {kvp.Key}: {kvp.Value}");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("OutputData: None");
+                    }
+                    Console.WriteLine(new string('-', 40));
+                }
+            }
+            else
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("No dynamic speed restriction matched. BOSOverrideRestrictionSpeed workflow will not be evaluated.");
+                Console.ResetColor();
             }
         }
     }
